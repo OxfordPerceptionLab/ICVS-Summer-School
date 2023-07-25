@@ -57,16 +57,16 @@ while completedTrials < taskNumber
     if strcmp(keyName,'=+')
         completedTrials = taskNumber;
             
-    % If the "a" key is pressed, increases the brightness of the current test colour
-    elseif strcmp(keyName,'a')
+    % If the "w" key is pressed, increases the brightness of the current test colour
+    elseif strcmp(keyName,'w')
         testColour = testColour + rgDelta;
         % Stops the brightness going over 255
         if (testColour > 255)
             testColour = 255;
         end
 
-    % If the "d" key is pressed, decreases the brightness of the current test colour        
-    elseif strcmp(keyName,'d')
+    % If the "s" key is pressed, decreases the brightness of the current test colour        
+    elseif strcmp(keyName,'s')
         testColour = testColour - rgDelta;
         % Stops the brightness going below 0
         if (testColour < 0)
