@@ -1,13 +1,14 @@
 function [out, matrix] = RGBconversion(output,RGB,displayPrimaries,whitepoint)
 %This function uses display primary measurements from 'measurePrimaries.m'
-%and gamma measurements from 'measureGamma.m' to create matrices that
-%allow for the conversion from a display's RGB color representation to
-%standardised colorspaces.
+%to create matrices that allow for the conversion from a display's RGB
+%color representation to standardised colorspaces.
+%
 %output - desired colorspace output. Either 'xyz', 'lms', 'luv' or 'lab'
 %
 %RGB - input linear RGB values
 %
-%displayPrimaries - 3xN array with red, green and blue channel recordings
+%displayPrimaries - 3x81 array with red, green and blue channel recordings -
+%these must be in in the lambda format [380 5 81]
 %
 %whitepoint - for lab and luv, a whitepoint reference is required. Select
 %either 'd65' or 'EEW'. 
@@ -21,12 +22,13 @@ switch whitepoint
     case 'd65'
         white = load("d65.txt");
         white = white(91:481,:);
-        white = white(:,2)/max(white(:,2))*2;
+        white = white(:,2)/max(white(:,2));
     case 'EEW'
         white = ones(391,1);
     case''
 end
 
+load(displayPrimaries);
 %different conversion procedure
 switch output
     case 'xyz'
@@ -51,7 +53,6 @@ switch output
             Mr, Mg, Mb;
             Sr, Sg, Sb];
 
-        matrix = matrix.*683.002;
         out = matrix * RGB';
         out = out';
     
@@ -102,7 +103,6 @@ switch output
             Mr, Mg, Mb;
             Sr, Sg, Sb];
         %calculate XYZ values
-        matrix = matrix.*683.002;
         whiteXYZ = white(1:5:end)'*matchingFunction(:,2:4);
         whiteXYZ = whiteXYZ./(whiteXYZ(2)/100);
         XYZ = matrix * RGB';
@@ -157,7 +157,6 @@ switch output
             Mr, Mg, Mb;
             Sr, Sg, Sb];
         %calculate XYZ
-        matrix = matrix.*683.002;
         whiteXYZ = white(1:5:end)'*matchingFunction(:,2:4);
         whiteXYZ = whiteXYZ./(whiteXYZ(2)/100);
         XYZ = matrix * RGB';
@@ -204,7 +203,7 @@ switch output
         %calculate XYZ and then xyY
         xyz = matrix * RGB';
         xy = xyz(1:2)./sum(xyz);
-        out = [xy' xyz(2).*683.002];
+        out = [xy' xyz(2)];
 
 end
 end
