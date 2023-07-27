@@ -23,7 +23,12 @@ if nargin < 3 || isempty(init)
 end
 
 if nargin < 4 || isempty(port)
-    port = FindSerialPort('usbmodem', 1);
+    if IsWin
+        port = serialportlist('available');
+        port = port(end);
+    else
+        port = FindSerialPort('usbmodem', 1);
+    end
 end
 
 
@@ -40,7 +45,7 @@ switch device
     case 'spectroCal'
         % rearrange steps for spectroCal format
         l1 = S(1);
-        l2 = S(1)+(S(2)*S(3));
+        l2 = S(1)+(S(2)*(S(3)-1));
         step = S(2);
         % measure spectral power density using rearranged lambda range
         [~, ~, ~, ~, spd] = SpectroCALMakeSPDMeasurement(port,l1,l2,step);

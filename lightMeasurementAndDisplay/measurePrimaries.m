@@ -10,10 +10,9 @@ S = [380 5 81];
 %luminances. As such, recordings a dimmed and then re-scaled later on
 switch meter
     case 'pr670'
-        PR670init();
-        scaling = 1;
-    case 'spectroCal'
-        scaling = 0.5;
+        port = serialportlist('available');
+        port = port(end);
+        PR670init(port);
 end
 
 %initialise display
@@ -21,15 +20,27 @@ end
 
 %assign colours and pre-assign output variable for speed
 colorCode = [1,0,0;0,1,0;0,0,1];
-displayPrimaries = zeros(S(3),size(colorCode,1));
-
+displayPrimaries = zeros(S(3),size(colorCode,1)+1);
+displayPrimaries(:,1) = S(1):S(2):(S(1)+(S(2)*(S(3)-1)));
 %loop through each channel
-for channel = 1:size(colorCode,1)
+for channel = 2:size(displayPrimaries,2)
     %draw color to screen
-    drawColorToDisplay(colorCode(:,channel).*scaling)
+    drawColorToDisplay(colorCode(:,channel-1).*WhiteIndex(window),display,window,windowDimensions)
     %make spectral recording
-    displayPrimaries(:,channel) = measureRadiance(meter,S,0)./scaling;
+    displayPrimaries(:,channel) = measureRadiance(meter,S,0);
 
 end
+sca;
+
+
+%plot primaries
+for channel = 2:size(displayPrimaries,2)
+    plot(displayPrimaries(:,1),displayPrimaries(:,channel),'Color',colorCode(:,channel-1),'LineWidth',2);hold on
+end
+xlabel('wavelength (nm)')
+ylabel('energy')
+xlim([S(1) displayPrimaries(end,1)])
+
+
 %save primary recordings
 save('displayPrimaries.mat','displayPrimaries');
