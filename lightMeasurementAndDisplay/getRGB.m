@@ -33,25 +33,12 @@ load(displayPrimaries);
 switch inputType
     case 'xyz'
         %load CMFs
-        matchingFunction = csvread('lin2012xyz10e_1_7sf.csv');
+        matchingFunction = table2array(readtable('lin2012xyz10e_1_7sf.csv'));
         matchingFunction = matchingFunction(1:5:391,:);
         displayPrimaries = displayPrimaries(3:end,:);
         %create matrix
-        Lr = displayPrimaries(:,2)' * matchingFunction(:,2);
-        Lg = displayPrimaries(:,3)' * matchingFunction(:,2);
-        Lb = displayPrimaries(:,4)' * matchingFunction(:,2);
-        
-        Mr = displayPrimaries(:,2)' * matchingFunction(:,3);
-        Mg = displayPrimaries(:,3)' * matchingFunction(:,3);
-        Mb = displayPrimaries(:,4)' * matchingFunction(:,3);
-        
-        Sr = displayPrimaries(:,2)' * matchingFunction(:,4);
-        Sg = displayPrimaries(:,3)' * matchingFunction(:,4);
-        Sb = displayPrimaries(:,4)' * matchingFunction(:,4);
 
-        RGB2XYZ_matrix = [Lr, Lg, Lb;
-            Mr, Mg, Mb;
-            Sr, Sg, Sb];
+        RGB2XYZ_matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
 
         matrix = inv(RGB2XYZ_matrix);
         
@@ -60,157 +47,92 @@ switch inputType
         
     case 'lms'
         %load cone fundamentals
-        matchingFunction = csvread('linss10e_1.csv');
+        matchingFunction = table2array(readtable('linss10e_1.csv'));
+        matchingFunction(isnan(matchingFunction(:,4)),4) = 0;
         matchingFunction = matchingFunction(1:5:391,:);
         displayPrimaries = displayPrimaries(3:end,:);
         %generate matrix
-        Lr = displayPrimaries(:,2)' * matchingFunction(:,2);
-        Lg = displayPrimaries(:,3)' * matchingFunction(:,2);
-        Lb = displayPrimaries(:,4)' * matchingFunction(:,2);
-        
-        Mr = displayPrimaries(:,2)' * matchingFunction(:,3);
-        Mg = displayPrimaries(:,3)' * matchingFunction(:,3);
-        Mb = displayPrimaries(:,4)' * matchingFunction(:,3);
-        
-        Sr = displayPrimaries(:,2)' * matchingFunction(:,4);
-        Sg = displayPrimaries(:,3)' * matchingFunction(:,4);
-        Sb = displayPrimaries(:,4)' * matchingFunction(:,4);
+        RGB2LMS_matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
 
-        RGB2LMS_matrix = [Lr, Lg, Lb;
-            Mr, Mg, Mb;
-            Sr, Sg, Sb];
-        
         matrix = inv(RGB2LMS_matrix);
 
         out = matrix * input';
         out = out';
 
+    case 'MB'
+        matchingFunction = table2array(readtable('linss10e_1.csv'));
+        matchingFunction(isnan(matchingFunction(:,4)),4) = 0;
+        matchingFunction = matchingFunction(1:5:391,:);
+        displayPrimaries = displayPrimaries(3:end,:);
+
+        RGB2LMS_matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
+
+        matrix = inv(RGB2LMS_matrix);
+
+        Lw = 0.692839;
+        Mw = 0.349676;
+        Sw = 2.146879448901693;
+
+        LMS(1) = (input(1)*input(3))/Lw;
+        LMS(2) = (input(3)-(LMS(1)*Lw))/Mw;
+        LMS(3) = (input(2)*input(3))/Sw;
+
+        out = matrix * LMS';
+        out = out';
+
+
     case 'xyY'
         %load CMFs
-        matchingFunction = csvread('lin2012xyz10e_1_7sf.csv');
+        matchingFunction = table2array(readtable('lin2012xyz10e_1_7sf.csv'));
         matchingFunction = matchingFunction(1:5:391,:);
         displayPrimaries = displayPrimaries(3:end,:);
         %create matrix
-        Lr = displayPrimaries(:,2)' * matchingFunction(:,2);
-        Lg = displayPrimaries(:,3)' * matchingFunction(:,2);
-        Lb = displayPrimaries(:,4)' * matchingFunction(:,2);
-        
-        Mr = displayPrimaries(:,2)' * matchingFunction(:,3);
-        Mg = displayPrimaries(:,3)' * matchingFunction(:,3);
-        Mb = displayPrimaries(:,4)' * matchingFunction(:,3);
-        
-        Sr = displayPrimaries(:,2)' * matchingFunction(:,4);
-        Sg = displayPrimaries(:,3)' * matchingFunction(:,4);
-        Sb = displayPrimaries(:,4)' * matchingFunction(:,4);
-
-        RGB2XYZ_matrix = [Lr, Lg, Lb;
-            Mr, Mg, Mb;
-            Sr, Sg, Sb];
+        RGB2XYZ_matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
 
         matrix = inv(RGB2XYZ_matrix);
         
-        XYZ(1) = (input(3)*input(1))/input(2);
-        XYZ(2) = input(3);
-        XYZ(3) = ((input(3)*(1-input(1)-input(2))))/input(2);
+        XYZ = xyYToXYZ(input');
 
-        out = matrix * XYZ';
+        out = matrix * XYZ;
         out = out';
 
      case 'lab'
         %load CMFs
-        matchingFunction = csvread('lin2012xyz10e_1_7sf.csv');
+        matchingFunction = table2array(readtable('lin2012xyz10e_1_7sf.csv'));
         matchingFunction = matchingFunction(1:5:391,:);
         displayPrimaries = displayPrimaries(3:end,:);
         %generate matrix
-        Lr = displayPrimaries(:,2)' * matchingFunction(:,2);
-        Lg = displayPrimaries(:,3)' * matchingFunction(:,2);
-        Lb = displayPrimaries(:,4)' * matchingFunction(:,2);
-        
-        Mr = displayPrimaries(:,2)' * matchingFunction(:,3);
-        Mg = displayPrimaries(:,3)' * matchingFunction(:,3);
-        Mb = displayPrimaries(:,4)' * matchingFunction(:,3);
-        
-        Sr = displayPrimaries(:,2)' * matchingFunction(:,4);
-        Sg = displayPrimaries(:,3)' * matchingFunction(:,4);
-        Sb = displayPrimaries(:,4)' * matchingFunction(:,4);
+        RGB2XYZ_matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
 
-        RGB2XYZ_matrix = [Lr, Lg, Lb;
-            Mr, Mg, Mb;
-            Sr, Sg, Sb];
-        
         matrix = inv(RGB2XYZ_matrix);
+        
         %calculate XYZ values
         whiteXYZ = white(1:5:end)'*matchingFunction(:,2:4);
         whiteXYZ = whiteXYZ./(whiteXYZ(2)/100);
         
-        %calculate X
-        if (((input(1)+16)/116)+(input(2)/500)) > 6/29
-            XYZ(1) = whiteXYZ(1)*(((input(1)+16)/116)+(input(2)/500))^3;
-        else
-            XYZ(1) = whiteXYZ(1)*(3*(6/29)^2)*((((input(1)+16)/116)+(input(2)/500))-(4/29));
-        end
-        %calculate Y
-        if ((input(1)+16)/116) > 6/29
-            XYZ(2) = whiteXYZ(2)*(((input(1)+16)/116)+(input(2)/500))^3;
-        else
-            XYZ(2) = whiteXYZ(2)*(3*(6/29)^2)*((((input(1)+16)/116))-(4/29));
-        end
-        %calculate Z
-        if (((input(1)+16)/116)-(input(3)/200)) > 6/29
-            XYZ(3) = whiteXYZ(3)*(((input(1)+16)/116)+(input(3)/500))^3;
-        else
-            XYZ(3) = whiteXYZ(3)*(3*(6/29)^2)*((((input(1)+16)/116)-(input(3)/200))-(4/29));
-        end
+        XYZ = LabToXYZ(input',whiteXYZ');
         
-        out = matrix * XYZ';
+        out = matrix * XYZ;
         out = out';       
         
         
     case 'luv'
         %load CMFs
-        matchingFunction = csvread('lin2012xyz10e_1_7sf.csv');
+        matchingFunction = table2array(readtable('lin2012xyz10e_1_7sf.csv'));
         matchingFunction = matchingFunction(1:5:391,:);
         displayPrimaries = displayPrimaries(3:end,:);
         %generate matrix
-        Lr = displayPrimaries(:,2)' * matchingFunction(:,2);
-        Lg = displayPrimaries(:,3)' * matchingFunction(:,2);
-        Lb = displayPrimaries(:,4)' * matchingFunction(:,2);
-        
-        Mr = displayPrimaries(:,2)' * matchingFunction(:,3);
-        Mg = displayPrimaries(:,3)' * matchingFunction(:,3);
-        Mb = displayPrimaries(:,4)' * matchingFunction(:,3);
-        
-        Sr = displayPrimaries(:,2)' * matchingFunction(:,4);
-        Sg = displayPrimaries(:,3)' * matchingFunction(:,4);
-        Sb = displayPrimaries(:,4)' * matchingFunction(:,4);
+        RGB2XYZ_matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
 
-        RGB2XYZ_matrix = [Lr, Lg, Lb;
-            Mr, Mg, Mb;
-            Sr, Sg, Sb];
-        
         matrix = inv(RGB2XYZ_matrix);
         
         %calculate XYZ
         whiteXYZ = white(1:5:end)'*matchingFunction(:,2:4);
         whiteXYZ = whiteXYZ./(whiteXYZ(2)/100);
 
-        uprimeWhite = (4*whiteXYZ(1))/(whiteXYZ(1)+15*whiteXYZ(2)+3*whiteXYZ(3));
-        vprimeWhite = (9*whiteXYZ(2))/(whiteXYZ(1)+15*whiteXYZ(2)+3*whiteXYZ(3));
-
-        uprime = (input(2)/(13*input(1)))+uprimeWhite;
-        vprime = (input(3)/(13*input(1)))+vprimeWhite;
+        XYZ = LuvToXYZ(input',whiteXYZ');
         
-        XYZ = zeros(1,3);
-        if input(1) <= 8
-            XYZ(2) = whiteXYZ(2)*input(1)*(3/29)^3;
-        else
-            XYZ(2) = whiteXYZ(2)*((input(1)+16)/116)^3;
-        end
-        
-        XYZ(1) = XYZ(2)*((9*uprime)/(4*vprime));
-        XYZ(3) = XYZ(2)*((12-(3*uprime)-(20*vprime))/(4*vprime));
-        
-        out = matrix * XYZ';
+        out = matrix * XYZ;
         out = out';
 end
 end

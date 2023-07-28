@@ -29,6 +29,7 @@ switch whitepoint
 end
 
 load(displayPrimaries);
+
 %different conversion procedure
 switch output 
     case 'xyz'
@@ -55,6 +56,24 @@ switch output
 
         out = matrix * RGB';
         out = out';
+
+    case 'MB'
+        matchingFunction = table2array(readtable('linss10e_1.csv'));
+        matchingFunction(isnan(matchingFunction(:,4)),4) = 0;
+        matchingFunction = matchingFunction(1:5:391,:);
+        displayPrimaries = displayPrimaries(3:end,:);
+
+        matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
+
+        LMS = matrix * RGB';
+
+        Lw = 0.692839;
+        Mw = 0.349676;
+        Sw = 2.146879448901693;
+        out = zeros(1,3);
+        out(3) = (LMS(1)*Lw) + (LMS(2)*Mw);
+        out(1) = (LMS(1)*Lw)/out(3);
+        out(2) = (LMS(3)*Sw)/out(3);
 
     case 'lab'
         %load CMFs
