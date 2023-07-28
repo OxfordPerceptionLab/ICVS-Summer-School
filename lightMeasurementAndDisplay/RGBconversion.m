@@ -29,7 +29,6 @@ switch whitepoint
 end
 
 load(displayPrimaries);
-displayPrimaries = Primaries;
 %different conversion procedure
 switch output 
     case 'xyz'
