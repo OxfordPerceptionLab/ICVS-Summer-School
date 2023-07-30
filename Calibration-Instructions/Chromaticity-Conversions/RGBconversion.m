@@ -4,7 +4,9 @@ function [out, matrix] = RGBconversion(output,RGB,displayPrimaries,whitepoint)
 %color representation to standardised colorspaces.
 %
 % Written by SJP, edited by ACH, July 29th 2023 for the ICVS Summer School
-%output - desired colorspace output. Either 'xyz', 'lms', 'luv' or 'lab'
+%output - desired colorspace output. Either 'xyz', 'lms', 'luv', 'lab',
+%'MB' or 'uv'
+%
 %RGB - input linear RGB values
 %
 %displayPrimaries - 3x81 array with red, green and blue channel recordings -
@@ -107,6 +109,18 @@ switch output
         out = XYZToLuv(XYZ,whiteXYZ');
         out = out';
     
+    case 'uv'
+        %load CMFs
+        matchingFunction = table2array(readtable('lin2012xyz10e_1_7sf.csv'));
+        matchingFunction = matchingFunction(1:5:391,:);
+        displayPrimaries = displayPrimaries(3:end,:);
+        %create matrix
+       
+        matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
+
+        XYZ = matrix * RGB';
+        out = XYZTouv(XYZ);
+        out = out';
     
     case 'xyY'
         %load CMFs

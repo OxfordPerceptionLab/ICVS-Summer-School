@@ -4,7 +4,7 @@ function [out, matrix] = getRGB(inputType,input,displayPrimaries,whitepoint)
 %colorspaces a display's RGB.
 % written by SJP, edited by ACH, July 28th for the ICVS Summer School 2023
 %
-%inputType - input colorspace ('xyz', 'xyY', 'luv', 'lab', 'lms')
+%inputType - input colorspace ('xyz', 'xyY', 'luv', 'lab', 'lms', 'MB', 'uvY')
 %
 %input - desired tristimulus value
 %
@@ -134,6 +134,24 @@ switch inputType
         XYZ = LuvToXYZ(input',whiteXYZ');
         
         out = matrix * XYZ;
+        out = out';
+
+    case 'uvY'
+        %load CMFs
+        matchingFunction = table2array(readtable('lin2012xyz10e_1_7sf.csv'));
+        matchingFunction = matchingFunction(1:5:391,:);
+        displayPrimaries = displayPrimaries(3:end,:);
+        %create matrix
+
+        RGB2XYZ_matrix = matchingFunction(:,2:4)' * displayPrimaries(:,2:4);
+
+        matrix = inv(RGB2XYZ_matrix);
+        
+        XYZ = uvYToXYZ(input');
+
+
+        out = matrix * XYZ;
+
         out = out';
 end
 end
