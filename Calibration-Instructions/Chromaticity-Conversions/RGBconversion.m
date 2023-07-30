@@ -3,8 +3,8 @@ function [out, matrix] = RGBconversion(output,RGB,displayPrimaries,whitepoint)
 %to create matrices that allow for the conversion from a display's RGB
 %color representation to standardised colorspaces.
 %
+% Written by SJP, edited by ACH, July 29th 2023 for the ICVS Summer School
 %output - desired colorspace output. Either 'xyz', 'lms', 'luv' or 'lab'
-%
 %RGB - input linear RGB values
 %
 %displayPrimaries - 3x81 array with red, green and blue channel recordings -
@@ -69,7 +69,7 @@ switch output
 
         Lw = 0.692839;
         Mw = 0.349676;
-        Sw = 2.146879448901693;
+        Sw = 0.0554786;
         out = zeros(1,3);
         out(3) = (LMS(1)*Lw) + (LMS(2)*Mw);
         out(1) = (LMS(1)*Lw)/out(3);

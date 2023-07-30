@@ -2,6 +2,7 @@ function [out, matrix] = getRGB(inputType,input,displayPrimaries,whitepoint)
 %This function uses display primary measurements from 'measurePrimaries.m'
 %to create matrices that allow for the conversion from standardised 
 %colorspaces a display's RGB.
+% written by SJP, edited by ACH, July 28th for the ICVS Summer School 2023
 %
 %inputType - input colorspace ('xyz', 'xyY', 'luv', 'lab', 'lms')
 %
@@ -71,7 +72,7 @@ switch inputType
 
         Lw = 0.692839;
         Mw = 0.349676;
-        Sw = 2.146879448901693;
+        Sw = 0.0554786;
 
         LMS(1) = (input(1)*input(3))/Lw;
         LMS(2) = (input(3)-(LMS(1)*Lw))/Mw;

@@ -1,4 +1,4 @@
-Code to run several types of colour vision tasks on the Arduino Leonardo device.
+Code to run several types of colour vision tasks on the Arduino Leonardo device. Code contributions by DJT, DHB, ACH, FXT. 
 
 Required Programs:
 - MATLAB (tested for version R2023a)
