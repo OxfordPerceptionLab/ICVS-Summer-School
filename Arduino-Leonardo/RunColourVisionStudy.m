@@ -38,7 +38,7 @@ elseif strcmp(taskType, 'CAM')
 
 % Displays an error message and exits the program if any other code is entered
 else
-    disp("ERROR: Please enter 'RLM', 'HFP', 'BRM', or 'UQY' as the task type!");
+    disp("ERROR: Please enter 'RLM', 'HFP', 'BRM', 'UQY', or 'CAM' as the task type!");
     return;
 end
 
