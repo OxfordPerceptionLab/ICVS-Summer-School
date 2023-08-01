@@ -1,21 +1,13 @@
 function ptptID = ArduinoRayleighMatchEdited(taskNumber)
 
-% Set constants
-redAnchor = 50;
-greenAnchor = 350;
-yellowValue = 160;
-
-referenceColourSeconds = 2;
-adaptationSeconds = 3;
+% Call structure of preset constants
+constants = SetConstants;
 
 %Loading and setting up the arduino device - Do not touch this code!
 a = OpenArduinoPort;
 
 % Asks for participant ID
 ptptID = input('Participant Code: ', 's');
-
-% Yellow LED parameters
-yellow = yellowValue;                  % Initial yellow value
 
 % Setup character capture.  Note that if you crash out of the program
 % you need to execute ListenChar(0) before you can enter keys at keyboard 
@@ -37,28 +29,28 @@ while completedTrials < taskNumber
     matchOrder = randperm(4);
     matchCount = 0;
 
-    while matchCount < 4
+    while matchCount < length(matchOrder)
         matchCount = matchCount + 1;
         matchType = matchOrder(matchCount);
 
         % Writes yellow value to device
-        writeYellow(a,yellow);
-        pause(referenceColourSeconds);
-        writeYellow(a,0);
+        writeYellow(a, constants.yellowReferenceBrightness);
+        pause(constants.referenceColourSeconds);
+        writeYellow(a, 0);
 
         if matchType == 1
             disp("No adaptation")
         elseif matchType == 2
             disp("No light adaptation")
-            pause(adaptationSeconds);
+            pause(constants.adaptationSeconds);
         elseif matchType == 3
             disp("Red light adaptation");
-            writeRGB(a, 255, 0, 0);
-            pause(adaptationSeconds);
+            writeRGB(a, constants.redAdaptationBrightness, 0, 0);
+            pause(constants.adaptationSeconds);
         elseif matchType == 4
             disp("Green light adaptation");
-            writeRGB(a, 0, 255, 0);
-            pause(adaptationSeconds);
+            writeRGB(a, 0, constants.greenAdaptationBrightness, 0);
+            pause(constants.adaptationSeconds);
         end
 
         lambda = rand();                                % Initial lambda value
@@ -66,17 +58,15 @@ while completedTrials < taskNumber
         lambdaDeltaIndex = 1;                           % Delta index
         lambdaDelta = lambdaDeltas(lambdaDeltaIndex);   % Current delta  
 
-        trialCompleted = 0;
+        subTrialCompleted = 0;
 
         disp("Now make a match!");
     
-        while trialCompleted == 0
+        while subTrialCompleted == 0
 
-            [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
+            [red, green] = SetRedAndGreen(lambda, constants.redAnchor, constants.greenAnchor);
 
-            writeRGB(a,red,green,0);
-
-            fprintf('Lambda = %0.3f, Red = %d, Green = %d, Lambda delta %0.3f\n', lambda, red, green, lambdaDelta); 
+            writeRGB(a, red, green, 0);
 
             % Waits for a key press
             [keyName, ~] = FindKeypress;
@@ -84,6 +74,8 @@ while completedTrials < taskNumber
             % If the "=" key is pressed, completes the trial count so that the program saves and exits
             if strcmp(keyName,'=+')
                 completedTrials = taskNumber;
+                matchCount = length(matchOrder);
+                subTrialCompleted = 1;
     
             % If the "a" key is pressed, increases lambda (the proportion of red in the red/green light)
             elseif strcmp(keyName,'a')
@@ -114,7 +106,7 @@ while completedTrials < taskNumber
             % If the "o" key is pressed, prints  the current light values in the
             % console without ending the trial
             elseif strcmp(keyName,'o')
-                 fprintf('Lambda = %0.3f, Red = %d, Green = %d, Lambda delta %0.3f\n', lambda, red, green, lambdaDelta); 
+                 fprintf('Lambda = %0.3f, Red = %d, Green = %d, Lambda delta = %0.3f\n', lambda, red, green, lambdaDelta); 
 
             % If the "i" key is pressed, resets the trial. This randomises the
             % lights and resets the step sizes back to the maximum value.
@@ -123,14 +115,14 @@ while completedTrials < taskNumber
                 lambdaDeltaIndex = 1;                           % Lambda step size
                 lambdaDelta = lambdaDeltas(lambdaDeltaIndex);   % Lambda delta
         
-                fprintf('Lambda = %0.3f, Red = %d, Green = %d, Lambda delta %0.3f\n', lambda, red, green, lambdaDelta); 
+                fprintf('Lambda = %0.3f, Red = %d, Green = %d, Lambda delta = %0.3f\n', lambda, red, green, lambdaDelta); 
                
             % If the "return" or "enter" key is pressed, ends the trial
             elseif strcmp(keyName,'return')
         
-                fprintf('Lambda = %0.3f, Red = %d, Green = %d, Lambda delta %0.3f\n', lambda, red, green, lambdaDelta); 
+                fprintf('Lambda = %0.3f, Red = %d, Green = %d, Lambda delta=  %0.3f\n', lambda, red, green, lambdaDelta); 
         
-                trialCompleted = 1;
+                subTrialCompleted = 1;
                 
                 % Informs the experimenter that the results will be saved
                 disp("Saving results...");
@@ -145,7 +137,7 @@ while completedTrials < taskNumber
                 end
         
                 % Turn off the test light
-                writeRGB(a,0,0,0);
+                writeRGB(a, 0, 0, 0);
         
             end
         end
