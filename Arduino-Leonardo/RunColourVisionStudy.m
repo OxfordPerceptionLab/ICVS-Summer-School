@@ -20,9 +20,9 @@ delete(instrfindall);
 
 % Runs the task code based on the inputted task
 
-% Rayleigh Match
+% EDITED Rayleigh Match
 if strcmp(taskType, 'RLM')                          
-    ptptID = ArduinoRayleighMatch(taskNumber);
+    ptptID = ArduinoRayleighMatchEdited(taskNumber);
 % Heterochromatic Flicker Photometry
 elseif strcmp(taskType, 'HFP')
     ptptID = ArduinoHeterochromaticFlickerPhotometry(taskNumber);
