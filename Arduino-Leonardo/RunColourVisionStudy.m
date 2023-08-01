@@ -22,7 +22,7 @@ delete(instrfindall);
 
 % EDITED Rayleigh Match
 if strcmp(taskType, 'RLM')                          
-    ptptID = ArduinoRayleighMatchEdited(taskNumber);
+    ptptID = ArduinoRayleighMatch(taskNumber);
 % Heterochromatic Flicker Photometry
 elseif strcmp(taskType, 'HFP')
     ptptID = ArduinoHeterochromaticFlickerPhotometry(taskNumber);
@@ -32,6 +32,10 @@ elseif strcmp(taskType, 'BRM')
 % Unique Yellow
 elseif strcmp(taskType, 'UQY')
     ptptID = ArduinoUniqueYellow(taskNumber);
+
+elseif strcmp(taskType, 'CAM')
+    ptptID = ArduinoRayleighMatchEdited(taskNumber);
+
 % Displays an error message and exits the program if any other code is entered
 else
     disp("ERROR: Please enter 'RLM', 'HFP', 'BRM', or 'UQY' as the task type!");
