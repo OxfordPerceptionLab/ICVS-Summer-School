@@ -1,5 +1,9 @@
 function ptptID = ArduinoRayleighMatch(taskNumber)
 
+% Clear everything before starting program
+delete(instrfindall)
+clearvars -except taskNumber;
+
 % Loading and setting up the arduino device - Do not touch this code!
 a = OpenArduinoPort;
 disp(" ");
@@ -9,8 +13,11 @@ writeRGB(a,0,0,0);
 writeYellow(a,0);
 
 % Asks for participant ID
+ListenChar(0);
 ptptID = input('Participant Code: ', 's');
 disp(" ");
+ListenChar(2);
+FlushEvents;
 
 % Red/green mixture parameters.  These get traded off in the
 % mixture by a parameter lambda.
@@ -22,12 +29,6 @@ yellowDeltas = [15 5 1];                        % Set of yellow deltas
 
 % Accepted confidence ratings
 acceptedConfidenceRatings = 1:4;
-
-% Setup character capture. Note that if you crash out of the program
-% you need to execute ListenChar(0) before you can enter keys at keyboard 
-% again.
-ListenChar(2);
-FlushEvents;
 
 % Sets counter of number of completed trials
 trialNumber = 0;
@@ -44,6 +45,8 @@ while trialNumber < taskNumber
 
     while matchType < 3
 
+        pause(.5);
+
         matchType = matchType + 1;
 
         switch matchType
@@ -55,6 +58,9 @@ while trialNumber < taskNumber
                 yellowDeltaIndex = 1;                           % Yellow step size
                 yellowDelta = yellowDeltas(yellowDeltaIndex);   % Yellow delta
 
+                disp(" ");
+                fprintf('Lambda = %0.3f, Red = %d, Green = %d, Yellow = %d\n',lambda, red, green, yellow); 
+                fprintf('\tLambda delta %0.3f; Yellow delta %d\n', lambdaDelta, yellowDelta);
                 disp(" ");
                 disp("Make your best match!");
             

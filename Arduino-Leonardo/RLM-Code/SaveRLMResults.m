@@ -42,3 +42,5 @@ ParticipantMatchesRLM=[ParticipantMatchesRLM; newResults];
 %% show and save file
 save('ParticipantMatchesRLM', 'ParticipantMatchesRLM');
 clear;
+
+end

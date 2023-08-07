@@ -125,19 +125,26 @@ void loop() {
     rValinit=round(random(rValMax*.4, rValMax*.6));
     rVal=rValinit;
     Serial.print(rValinit+100);
-    Serial.print(gValinit+100);
   }
   if (InputFromMatlab=='o'){
-  Serial.print(rVal+100);
-  Serial.print(gVal+100);  
-  }
-    if (InputFromMatlab=='u'){
-    // Send initial and final red intensity to MATLAB
-    Serial.print(rValinit+100);
     Serial.print(rVal+100);
-    Serial.print(gValinit+100);
+    Serial.print(gVal+100); 
+  }
+  if (InputFromMatlab==1 or InputFromMatlab==2 or InputFromMatlab==3 or InputFromMatlab==4){
+    gVal=64*InputFromMatlab;
     Serial.print(gVal+100);
   }
+  if (InputFromMatlab=='n'){
+    gValinit=gVal;
+    Serial.print(gValinit+100);
+  }
+  if (InputFromMatlab=='g'){
+    rValMatch = rVal; 
+  }
+  if (InputFromMatlab=='h'){
+    rVal = rValMatch;
+  }
 }
+  
 InputFromMatlab=0;
 }
