@@ -12,9 +12,8 @@ clearvars -except taskNumber;
 % Call arduino object
 % Tries using the value in ConstantsHFP
 try
-    portCode = ConstantsHFP.serialPort;
-    disp(strcat("Attempting to open arduino using port '", portCode, "' from ConstantsHFP..."))
-    serialObj=serialport(portCode, 9600);
+    disp(strcat("Attempting to open arduino using port '", ConstantsHFP.serialPort, "' from ConstantsHFP..."))
+    serialObj=serialport(ConstantsHFP.serialPort, 9600);
     disp("Port opened successfully using value in ConstantsHFP!")
     disp(" ");
 % If this fails, asks experimenter to manually enter the port number to try again
