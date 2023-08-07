@@ -103,7 +103,7 @@ while trialNumber < taskNumber
             writeLEDs(a, [red, green, blue, yellow]);
         
             % Waits for a key press
-            [keyName, ~] = FindKeypress;
+            keyName = FindKeypress;
         
             % Responds accoring to the key pressed
             switch keyName
