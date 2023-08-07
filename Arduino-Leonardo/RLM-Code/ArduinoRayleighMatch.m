@@ -11,7 +11,7 @@ a = OpenArduinoPort;
 disp(" ");
 
 % Reset all lights to off (in case the arduino previously carahed)
-writeLEDs(a,[0,0,0,0]);
+writeLEDs(a,[0,0,0]);
 
 % Allows console responses
 ListenChar(0);
@@ -31,7 +31,6 @@ greenAnchor = 350;                              % Green value for lambda = 0
 lambdaDeltas = [0.05 0.02 0.005];               % Set of lambda deltas
 % Yellow LED parameters
 yellowDeltas = [15 5 1];                        % Set of yellow deltas
-blue = 0;                                       % Blue LED not used for this task
 
 % Accepted confidence ratings
 acceptedConfidenceRatings = 1:4;
@@ -70,9 +69,9 @@ while trialNumber < taskNumber
                 yellow = round(255 .* rand());                  % Yellow value
                 yellowDeltaIndex = 1;                           % Yellow step size
                 yellowDelta = yellowDeltas(yellowDeltaIndex);   % Yellow delta
+                [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
 
                 % Displays starting values
-                [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
                 disp(" ");
                 fprintf('Lambda = %0.3f, Red = %d, Green = %d, Yellow = %d\n',lambda, red, green, yellow); 
                 fprintf('\tLambda delta %0.3f; Yellow delta %d\n', lambdaDelta, yellowDelta);
@@ -100,7 +99,7 @@ while trialNumber < taskNumber
             % Sets red and green values based on current lambda
             [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
             % Writes LED values to device
-            writeLEDs(a, [red, green, blue, yellow]);
+            writeLEDs(a, [red, green, yellow]);
         
             % Waits for a key press
             keyName = FindKeypress;
@@ -187,6 +186,7 @@ while trialNumber < taskNumber
                         yellow = round(255 .* rand());                  % Yellow value
                         yellowDeltaIndex = 1;                           % Yellow step size
                         yellowDelta = yellowDeltas(yellowDeltaIndex);   % Yellow delta
+                        [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
                 
                         % Prints the new light values
                         fprintf('Lambda = %0.3f, Red = %d, Green = %d, Yellow = %d\n',lambda, red, green, yellow); 
