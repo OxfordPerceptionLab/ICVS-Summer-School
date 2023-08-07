@@ -11,8 +11,7 @@ a = OpenArduinoPort;
 disp(" ");
 
 % Reset all lights to off (in case the arduino previously carahed)
-writeRGB(a,0,0,0);
-writeYellow(a,0);
+writeLEDs(a,[0,0,0,0]);
 
 % Allows console responses
 ListenChar(0);
@@ -32,6 +31,7 @@ greenAnchor = 350;                              % Green value for lambda = 0
 lambdaDeltas = [0.05 0.02 0.005];               % Set of lambda deltas
 % Yellow LED parameters
 yellowDeltas = [15 5 1];                        % Set of yellow deltas
+blue = 0;                                       % Blue LED not used for this task
 
 % Accepted confidence ratings
 acceptedConfidenceRatings = 1:4;
@@ -99,10 +99,8 @@ while trialNumber < taskNumber
 
             % Sets red and green values based on current lambda
             [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
-            % Writes red and green values to device
-            writeRGB(a, red, green, 0);
-            % Writes yellow value to device
-            writeYellow(a, yellow);
+            % Writes LED values to device
+            writeLEDs(a, [red, green, blue, yellow]);
         
             % Waits for a key press
             [keyName, ~] = FindKeypress;

@@ -11,9 +11,10 @@ clearvars -except taskNumber;
 
 % Call arduino object
 % Tries using the value in ConstantsHFP
+portCode = 'COM6';
 try
-    disp(strcat("Attempting to open arduino using port '", ConstantsHFP.serialPort, "' from ConstantsHFP..."))
-    serialObj=serialport(ConstantsHFP.serialPort, 9600);
+    disp(strcat("Attempting to open arduino using port '", portCode, "' from ConstantsHFP..."))
+    serialObj=serialport(portCode, 9600);
     disp("Port opened successfully using value in ConstantsHFP!")
     disp(" ");
 % If this fails, asks experimenter to manually enter the port number to try again
@@ -41,7 +42,7 @@ disp(" ");
 %Turns on character capture
 ListenChar(2);
 
-% SET CONSTANTS
+% SET ARDUINO INPUTS
 increaseInputs={'q', 'w', 'e'};     % Key codes for increasing the red light that the arduino can read
 decreaseInputs={'r', 't', 'y'};     % Key codes for decreasing the red light that the arduino can read
 % i = reset trial
