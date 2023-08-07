@@ -13,25 +13,12 @@ clearvars -except taskNumber;
 % Tries using the value in ConstantsHFP
 try
     portCode = ConstantsHFP.serialPort;
-    disp(strcat("Attempting to open arduino using port '", portCode, "' from ConstantsHFP..."))
     serialObj=serialport(portCode, 9600);
-    disp("Port opened successfully using value in ConstantsHFP!")
-    disp(" ");
 % If this fails, asks experimenter to manually enter the port number to try again
 catch
-    try
-        portNumber = input("Unable to open port! Please enter the correct port number here to try again: ", 's');
-        portCode = strcat('COM', portNumber);
-        disp(strcat("Attempting to open arduino using port '", portCode, "' instead..."))
-        serialObj=serialport(portCode, 9600);
-        disp("Port opened successfully using value entered!")
-        disp(" ");
-    % If this fails, displays an error message and exits the program
-    catch
-        disp("Port not opened successfully. Please troubleshoot the issue and try again.")
-        disp(" ");
-        return;
-    end
+    portNumber = input("Wrong port code entered in ConstantsHFP! Please enter the correct port number here (number only): ", 's');
+    portCode = strcat('COM', portNumber);
+    serialObj=serialport(portCode, 9600);
 end
 
 % Turn off character capture
@@ -142,13 +129,15 @@ while trialNumber < taskNumber
                     matchType = 3;
                     subTrialCompleted = 1;
         
-                % If the "a" key is pressed, increases the red value based on the current delta
+                % If the "a" key is pressed, increases the red value based on the
+                % current delta
                 case 'a'
                     arduinoInput = increaseInputs{deltaIndex};
                     % Sends increase in red value to device
                     fprintf(serialObj, arduinoInput);
         
-                % If the "d" key is pressed, decreases the red value based on the current delta
+                % If the "d" key is pressed, decreases the red value based on the
+                % current delta
                 case 'd'
                     arduinoInput = decreaseInputs{deltaIndex};
                     % Sends decrease in red delta to the device
@@ -157,7 +146,6 @@ while trialNumber < taskNumber
                 % If the "k" button is pressed, decreases red delta (the amount of
                 % change in red that occurs with each key press, i.e. the step size)
                 case 'k'
-                    % Will only change step size if match type = 1
                     if matchType == 1
                         deltaIndex = deltaIndex + 1;
                         % If already at the smallest step size, does not change
@@ -199,31 +187,21 @@ while trialNumber < taskNumber
                     % Print the initial red and green values
                     fprintf("Initial Red Value = %d, Initial Green Value = %d, Current Green Value = %d, Red Delta Value = %d \n", rValinit, gValinit, gVal, redDelta);
 
-                % if the 'm' key is pressed, allows for experimener to
-                % change the green value to 64, 128, 192, or 256
                 case 'm'
-                    % Checks that it is a best match
                     if matchType == 1
-                        % Allows key input
                         ListenChar(0);
-                        % Asks experimenter for key value of new gren value
-                        % until a valid response is entered
                         gValInput = NaN;
                         disp(" ");
                         while ~ismember(gValInput, 1:4)
                             gValInput = input("Input a new green value! 1 = 64, 2 = 128, 3 = 192, 4 = 256: ");
                         end
-                        % Closes console response
                         ListenChar(2);
                         disp(" ");
-                        % Sends new green value to the arduino
                         fprintf(serialObj, gValInput);
-                        % Reads current green value from the arduino
                         gVal=read(serialObj, 6, "char");
                         gVal = str2num(gVal) - 100;
                     end
 
-                    % Pauses the program for .5 seconds
                     pause(.5);
         
                 % If the "return" or "enter" key is pressed, ends the trial

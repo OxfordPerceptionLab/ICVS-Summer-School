@@ -60,9 +60,8 @@ while trialNumber < taskNumber
         % Adds 1 to the match type counter
         matchType = matchType + 1;
 
-        % Sets values according to the current match type
+        % Sets values a
         switch matchType
-            % 1 = Best match
             case 1
                 lambda = rand();                                % Lambda value
                 lambdaDeltaIndex = 1;                           % Lambda step size
@@ -71,30 +70,26 @@ while trialNumber < taskNumber
                 yellowDeltaIndex = 1;                           % Yellow step size
                 yellowDelta = yellowDeltas(yellowDeltaIndex);   % Yellow delta
 
-                % Displays starting values
                 disp(" ");
                 fprintf('Lambda = %0.3f, Red = %d, Green = %d, Yellow = %d\n',lambda, red, green, yellow); 
                 fprintf('\tLambda delta %0.3f; Yellow delta %d\n', lambdaDelta, yellowDelta);
                 disp(" ");
                 disp("Make your best match!");
             
-            % 2 = Most red match
             case 2
                 bestLambda = lambda;                            % Saves best match lambda value to re-use in matchType 3
                 lambdaDeltaIndex = length(lambdaDeltas);        % Makes the lambda delta the smallest available value
                 lambdaDelta = lambdaDeltas(lambdaDeltaIndex);
                 disp("Now add red until the lights no longer match!");
             
-            % 3 = Most green match
             case 3
                 lambda = bestLambda;                            % Reinstates the lambda value of the best match
                 disp("Now add green until the lights no longer match!");
         end
 
-        % Sets variable to keep track of when the current match is completed
-        matchCompleted = 0;
+        subTrialCompleted = 0;
 
-        while matchCompleted == 0
+        while subTrialCompleted == 0
 
             % Sets red and green values based on current lambda
             [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
@@ -106,13 +101,12 @@ while trialNumber < taskNumber
             % Waits for a key press
             [keyName, ~] = FindKeypress;
         
-            % Responds accoring to the key pressed
             switch keyName
-                % If the "=" key is pressed, completes the trial count, match count, and match completion so that the program saves and exits
+                % If the "=" key is pressed, completes the trial count so that the program saves and exits
                 case '=+'
                     trialNumber = taskNumber;
                     matchType = 3;
-                    matchCompleted = 1;
+                    subTrialCompleted = 1;
                 
                 % If the "a" key is pressed, increases lambda (the proportion of red in the red/green light)
                 case 'a'
@@ -201,7 +195,7 @@ while trialNumber < taskNumber
                     fprintf('Lambda = %0.3f, Red = %d, Green = %d, Yellow = %d\n', lambda, red, green, yellow); 
                     fprintf('\tLambda delta %0.3f; Yellow delta %d\n', lambdaDelta, yellowDelta);
 
-                    % CONFIDENCE RATING
+                    % Confidence rating
                     % Opens responses in console
                     ListenChar(0);
                     % Loops until a valid value in entered for the confidence rating
@@ -220,7 +214,7 @@ while trialNumber < taskNumber
                     SaveRLMResults(ptptID, trialNumber, matchType, red, green, yellow, lambda, lambdaDelta, yellowDelta, confidenceRating);
     
                     % Sets subTrialCompleted to 1 to move on to the next trial
-                    matchCompleted = 1;
+                    subTrialCompleted = 1;
             end
         end
     end
