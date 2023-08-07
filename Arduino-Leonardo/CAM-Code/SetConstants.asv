@@ -6,18 +6,16 @@ constants = struct;
 constants.redAnchor = 50;
 constants.greenAnchor = 350;
 
-constants.referenceColourSeconds = 10;
-constants.adaptationSeconds = 60;
+constants.referenceColourSeconds = 2;
+constants.adaptationSeconds = 3;
 
 constants.yellowReferenceBrightness = 160;
 
-redMaxLuminance = 2767.0;
-greenMaxLuminance = 665.2;
+redmaxLuminan
 
-constants.redAdaptationBrightness = round(255 * (greenMaxLuminance / redMaxLuminance));
+constants.redAdaptationBrightness = 255;
 constants.greenAdaptationBrightness = 255;
 
 constants.maxTrialSeconds = 20;
-constants.nextTrialDelay = 20;
 
 end

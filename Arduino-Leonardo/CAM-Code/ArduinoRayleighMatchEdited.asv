@@ -6,9 +6,6 @@ constants = SetConstants;
 %Loading and setting up the arduino device - Do not touch this code!
 a = OpenArduinoPort;
 
-writeRGB(a, 0, 0 ,0);
-writeYellow(a, 0);
-
 % Asks for participant ID
 ptptID = input('Participant Code: ', 's');
 
@@ -29,7 +26,7 @@ while completedTrials < taskNumber
     
     % type 1 = no adptation, type 2 = no light, type 3 = red adaptation, type 4
     % = green adaptation
-    matchOrder = randperm(4);
+    matchOrder = randperm(4)
     matchCount = 0;
 
     while matchCount < length(matchOrder)
@@ -65,7 +62,6 @@ while completedTrials < taskNumber
 
         subTrialCompleted = 0;
 
-        beep;
         disp("Now make a match!");
 
         tic;
@@ -81,7 +77,7 @@ while completedTrials < taskNumber
 
             timeSoFar = toc;
 
-            % If the "=" key is pressed, completes the trial count so that the program saves and exits
+                        % If the "=" key is pressed, completes the trial count so that the program saves and exits
             if strcmp(keyName,'=+')
                 completedTrials = taskNumber;
                 matchCount = length(matchOrder);
