@@ -72,6 +72,7 @@ while trialNumber < taskNumber
                 yellowDelta = yellowDeltas(yellowDeltaIndex);   % Yellow delta
 
                 % Displays starting values
+                [red, green] = SetRedAndGreen(lambda, redAnchor, greenAnchor);
                 disp(" ");
                 fprintf('Lambda = %0.3f, Red = %d, Green = %d, Yellow = %d\n',lambda, red, green, yellow); 
                 fprintf('\tLambda delta %0.3f; Yellow delta %d\n', lambdaDelta, yellowDelta);
