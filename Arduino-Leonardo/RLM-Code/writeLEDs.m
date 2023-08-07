@@ -1,11 +1,11 @@
 function writeLEDs(a, RGBY)
 
-pwmRGBY = zeros(1,4);
+% Locations of red, green, blue, and yellow LED
 dNum = ["D6", "D5", "D3", "D9"];
 
-for colour = 1:4
-    pwmRGBY(colour) = (255 - RGBY(colour)) / 255;
-    writePWMDutyCycle(a, dNum(colour), pwmRGBY(colour));
+for i = 1:4
+    colVal = (255 - RGBY(i)) / 255;
+    writePWMDutyCycle(a, dNum(i), colVal);
 end
 
 end
