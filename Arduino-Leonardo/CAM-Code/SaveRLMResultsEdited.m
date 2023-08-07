@@ -1,4 +1,4 @@
-function SaveRLMResultsEdited(ptptID, completedTrials, red, green, lambda, lambdaDelta, matchType, timeTaken)
+function SaveRLMResultsEdited(ptptID, completedTrials, matchType, red, green, lambda, lambdaDelta, matchType, timeTaken)
 %This code creates structure variable "ParticipantMatches"
 
 %'ParticipantCode' is the code of each participant ('rp_001', 'rp_002', etc.)

@@ -19,8 +19,7 @@ warning('off','instrument:instrfindall:FunctionToBeRemoved');
 delete(instrfindall);
 
 % Runs the task code based on the inputted task
-
-% EDITED Rayleigh Match
+% Rayleigh Match
 if strcmp(taskType, 'RLM')                          
     ptptID = ArduinoRayleighMatch(taskNumber);
 % Heterochromatic Flicker Photometry
@@ -32,7 +31,7 @@ elseif strcmp(taskType, 'BRM')
 % Unique Yellow
 elseif strcmp(taskType, 'UQY')
     ptptID = ArduinoUniqueYellow(taskNumber);
-
+% Chromatic Adaptation Matching
 elseif strcmp(taskType, 'CAM')
     ptptID = ArduinoRayleighMatchEdited(taskNumber);
 
@@ -48,25 +47,19 @@ tableFileName = strcat('ParticipantMatches', taskType, '.mat');
 try
     % Imports the current table under the name "fullTable"
     fullTable = importdata(tableFileName);
-    
     % Creates "currentTable", which only contains rows that match the current ptptID
-    currentTable = fullTable(strcmp(fullTable.ParticipantCode, ptptID), :);
-    
+    currentTable = fullTable(strcmp(fullTable.ParticipantCode, ptptID), :);   
     if isempty(currentTable)
         disp(strcat("No data to save! No rows in ", tableFileName, " match the current participant ID"));
-
     else
         % Creates the full path and save name for the current participant
-        tablePathAndName = strcat(saveDir, taskType, '_', ptptID, '.xlsx');
-        
+        tablePathAndName = strcat(saveDir, taskType, '_', ptptID, '.xlsx');        
         % Saves the current participant's results as an .xlsx file
         writetable(currentTable, tablePathAndName);
-
     end
 
 catch
     disp(strcat("No data to save! Cannot find ", tableFileName));
-
 end
 
 % Removes extra paths
@@ -80,4 +73,8 @@ delete(instrfindall)
 
 % Turns irrelevant warning back on
 warning('on','instrument:instrfindall:FunctionToBeRemoved');
+
+% Checks that ListenChar = 0;
+ListenChar(0);
+
 end

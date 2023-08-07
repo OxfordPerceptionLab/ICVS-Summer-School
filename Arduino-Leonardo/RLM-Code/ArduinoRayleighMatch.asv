@@ -16,14 +16,15 @@ disp(" ");
 % mixture by a parameter lambda.
 redAnchor = 50;                                 % Red value for lambda = 1
 greenAnchor = 350;                              % Green value for lambda = 0
-lambdaDeltas = [0.05 0.02 0.005];               % Set of lambda deltas
+lambdaDeltas = [0.05 0.02 0.005];         % Set of lambda deltas
+
 % Yellow LED parameters
-yellowDeltas = [15 5 1];                        % Set of yellow deltas
+yellowDeltas = [15 5 1];                     % Set of yellow deltas
 
 % Accepted confidence ratings
 acceptedConfidenceRatings = 1:4;
 
-% Setup character capture. Note that if you crash out of the program
+% Setup character capture.  Note that if you crash out of the program
 % you need to execute ListenChar(0) before you can enter keys at keyboard 
 % again.
 ListenChar(2);
@@ -48,24 +49,24 @@ while trialNumber < taskNumber
 
         switch matchType
             case 1
-                lambda = rand();                                % Lambda value
-                lambdaDeltaIndex = 1;                           % Lambda step size
-                lambdaDelta = lambdaDeltas(lambdaDeltaIndex);   % Lambda delta
                 yellow = round(255 .* rand());                  % Yellow value
                 yellowDeltaIndex = 1;                           % Yellow step size
                 yellowDelta = yellowDeltas(yellowDeltaIndex);   % Yellow delta
+                lambda = rand();                                % Lambda value
+                lambdaDeltaIndex = 1;                           % Lambda step size
+                lambdaDelta = lambdaDeltas(lambdaDeltaIndex);   % Lambda delta
 
                 disp(" ");
                 disp("Make your best match!");
             
             case 2
-                bestLambda = lambda;                            % Saves best match lambda value to re-use in matchType 3
-                lambdaDeltaIndex = length(lambdaDeltas);        % Makes the lambda delta the smallest available value
+                bestLambda = lambda;
+                lambdaDeltaIndex = length(lambdaDeltas);
                 lambdaDelta = lambdaDeltas(lambdaDeltaIndex);
                 disp("Now add red until the lights no longer match!");
             
             case 3
-                lambda = bestLambda;                            % Reinstates the lambda value of the best match
+                lambda = bestLambda;
                 disp("Now add green until the lights no longer match!");
         end
 
@@ -78,7 +79,7 @@ while trialNumber < taskNumber
             % Writes red and green values to device
             writeRGB(a, red, green, 0);
             % Writes yellow value to device
-            writeYellow(a, yellow);
+            writeYellow(a,yellow);
         
             % Waits for a key press
             [keyName, ~] = FindKeypress;
@@ -158,12 +159,12 @@ while trialNumber < taskNumber
                 % lights and resets the step sizes back to the maximum value.
                 case 'i'
                     if matchType == 1
-                        lambda = rand();                                % Lambda value
-                        lambdaDeltaIndex = 1;                           % Lambda step size
-                        lambdaDelta = lambdaDeltas(lambdaDeltaIndex);   % Lambda delta
                         yellow = round(255 .* rand());                  % Yellow value
+                        lambda = rand();                                % Lambda value
                         yellowDeltaIndex = 1;                           % Yellow step size
                         yellowDelta = yellowDeltas(yellowDeltaIndex);   % Yellow delta
+                        lambdaDeltaIndex = 1;                           % Lambda step size
+                        lambdaDelta = lambdaDeltas(lambdaDeltaIndex);   % Lambda delta
                 
                         % Prints the new light values
                         fprintf('Lambda = %0.3f, Red = %d, Green = %d, Yellow = %d\n',lambda, red, green, yellow); 
@@ -180,12 +181,12 @@ while trialNumber < taskNumber
                     % Confidence rating
                     % Opens responses in console
                     ListenChar(0);
-                    % Loops until a valid value in entered for the confidence rating
+                    % Lops until a valid value in entered for the
+                    % confidence rating
                     confidenceRating = NaN;
                     while ~ismember(confidenceRating, acceptedConfidenceRatings)
                             confidenceRating = input("Rate your confidence 1-4: ");
                     end
-                    % Closes responses in console
                     ListenChar(2);
                     
                     % Informs the experimenter that the results will be saved

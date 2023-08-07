@@ -1,4 +1,4 @@
-function SaveRLMResults(ptptID, trialNumber, red, green, yellow, lambda, lambdaDelta, yellowDelta)
+function SaveRLMResults(ptptID, trialNumber, matchType, red, green, yellow, lambda, lambdaDelta, yellowDelta, confidenceRating)
 %This code creates structure variable "ParticipantMatches"
 
 %'ParticipantCode' is the code of each participant ('rp_001', 'rp_002', etc.)
@@ -11,34 +11,34 @@ function SaveRLMResults(ptptID, trialNumber, red, green, yellow, lambda, lambdaD
 %% record current date and time
 CurrentDateAndTime=round(clock);
 
-trialNumber = num2str(trialNumber);
-red = num2str(red);
-green = num2str(green);
-yellow = num2str(yellow);
-lambda = num2str(lambda);
-lambdaDelta = num2str(lambdaDelta);
-yellowDelta = num2str(yellowDelta);
+varNames = {'ParticipantCode', 'Trial', 'MatchType', 'DateTime', 'Red', 'Green', ...
+        'Yellow', 'Lambda', 'LambdaDelta', 'YellowDelta', 'ConfidenceRating'};
+
+if matchType == 1
+    matchName = 'Best';
+elseif matchType == 2
+    matchName = 'MaxLambda';
+elseif matchType == 3
+    matchName = 'MinLambda';
+end
 
 if ~exist("ParticipantMatchesRLM.mat", 'file')
     % create new table if one doesn't exist
-    ParticipantMatchesRLM=table([], [], [], [], [], [], [], [], [],...
-        'VariableNames',{'ParticipantCode', 'Trial', 'DateTime', 'Red', 'Green', ...
-        'Yellow', 'Lambda', 'LambdaDelta', 'YellowDelta'});
+    ParticipantMatchesRLM=table.empty(0,length(varNames));
+    ParticipantMatchesRLM.Properties.VariableNames = varNames;
 else
     % Load Structure File
     load('ParticipantMatchesRLM.mat');
 end
 
 %% new participant results
-newResults=table({ptptID}, str2num(trialNumber), CurrentDateAndTime, ... 
-    str2num(red), str2num(green), str2num(yellow), str2num(lambda), str2num(lambdaDelta), str2num(yellowDelta),...
-    'VariableNames',...
-    {'ParticipantCode', 'Trial', 'DateTime', ... 
-    'Red', 'Green', 'Yellow', 'Lambda', 'LambdaDelta', 'YellowDelta'});
+newResults=table({ptptID}, trialNumber, {matchName}, CurrentDateAndTime, ... 
+    red, green, yellow, lambda, lambdaDelta, yellowDelta, confidenceRating,...
+    'VariableNames', varNames);
 
 %% new table
 ParticipantMatchesRLM=[ParticipantMatchesRLM; newResults];
 
 %% show and save file
 save('ParticipantMatchesRLM', 'ParticipantMatchesRLM');
-clear
+clear;
